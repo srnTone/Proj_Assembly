@@ -190,6 +190,9 @@ L_ExitHex:
 ParseHex64 ENDP
 
 CharToNibble PROC
+    push    ebp
+    mov     ebp, esp
+    
     cmp     al, '0'
     jb      L_N_Err
     cmp     al, '9'
@@ -200,7 +203,8 @@ CharToNibble PROC
     ja      L_N_Err
     sub     al, 'a'
     add     al, 10
-    ret
+    movzx   eax, al
+    jmp     L_N_Exit
 L_N_Up:
     cmp     al, 'A'
     jb      L_N_Err
@@ -208,12 +212,17 @@ L_N_Up:
     ja      L_N_Err
     sub     al, 'A'
     add     al, 10
-    ret
+    movzx   eax, al
+    jmp     L_N_Exit
 L_N_Digit:
     sub     al, '0'
-    ret
+    movzx   eax, al
+    jmp     L_N_Exit
 L_N_Err:
-    mov     al, 0FFh
+    mov     eax, 0FFh
+L_N_Exit:
+    mov     esp, ebp
+    pop     ebp
     ret
 CharToNibble ENDP
 
